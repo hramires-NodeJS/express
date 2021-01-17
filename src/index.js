@@ -1,5 +1,5 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
+const { uuid, isUuid } = require('uuidv4');
 
 const app = express();
 
@@ -22,7 +22,38 @@ app.use(express.json());
  * Request Body: Conteudo na hora de criar ou editar um recurso (JSON)
  */
 
+/**
+ * Middleware:
+ * 
+ * Interceptador de requisições que interrompe totalmente a requisição ou altera os dados da requisição.
+ */
+
 const projects = [];
+
+function logRequests(request, response, next) {
+    const { method, url } = request;
+
+    const logLabel = `[${method.toUpperCase()}] ${url}`;
+
+    console.time(logLabel);
+
+    next();
+
+    console.timeEnd(logLabel);
+}
+
+function validadeProjectId(request, response, next) {
+    const { id } = request.params;
+
+    if (!isUuid(id)) {
+        return response.status(400).json({ error: 'Invalid project ID.' })
+    }
+
+    next();
+}
+
+app.use(logRequests);
+// app.use('/projects/:id', validadeProjectId);
 
 app.get('/projects', (request, response) => {
     const { title } = request.query;
@@ -37,7 +68,7 @@ app.get('/projects', (request, response) => {
 app.post('/projects', (request, response) => {
     const { title, owner } = request.body;
 
-    const project = { id: uuidv4(), title, owner };
+    const project = { id: uuid(), title, owner };
 
     projects.push(project);
 
@@ -67,7 +98,7 @@ app.put('/projects/:id', (request, response) => {
     return response.json(project);
 });
 
-app.delete('/projects/:id', (request, response) => {
+app.delete('/projects/:id', validadeProjectId, (request, response) => {
     const { id } = request.params;
 
     const projectIndex = projects.findIndex(project => project.id === id);

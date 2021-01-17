@@ -48,6 +48,11 @@ node src/index.js
 yarn nodemon src/index.js
 ```
 
+### Adicionar identificador único
+```
+yarn add uuidv4
+```
+
 ### Executar com o Script
 ```
 yarn dev

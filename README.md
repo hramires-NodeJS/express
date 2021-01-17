@@ -38,12 +38,17 @@ yarn add express
 yarn add nodemon -D
 ```
 
-### Executando sem o Nodemon
+### Executar sem o Nodemon
 ```
 node src/index.js
 ```
 
-### Executando com o Nodemon
+### Executar com o Nodemon
 ```
 yarn nodemon src/index.js
+```
+
+### Executar com o Script
+```
+yarn dev
 ```
